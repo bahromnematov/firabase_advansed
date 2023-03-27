@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1081949417782",
+    "project_id": "fir-2e095",
+    "storage_bucket": "fir-2e095.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1081949417782:android:071867cc8dae1707160397",
+        "android_client_info": {
+          "package_name": "uz.bahrom.firabase_advansed"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1081949417782-g093a1t5npljv9ilfoqt31mpdqmmj0di.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBOposd_fWuJmPvuvhRJTX5VD7_EC9RXQ8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1081949417782-g093a1t5npljv9ilfoqt31mpdqmmj0di.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
