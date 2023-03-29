@@ -1,7 +1,11 @@
+import 'dart:io';
+
 import 'package:firabase_advansed/model/post_model.dart';
 import 'package:firabase_advansed/pages/home_page.dart';
 import 'package:firabase_advansed/servise/rtdb_servise.dart';
+import 'package:firabase_advansed/servise/storage_servise.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class CreatePage extends StatefulWidget {
   static const route = "create_page";
@@ -19,35 +23,69 @@ class _CreatePageState extends State<CreatePage> {
   var contentController = TextEditingController();
   var dateController = TextEditingController();
 
-  _createPost(){
-    String firstName=firstNameController.text.toString();
-    String lastName=lastNameController.text.toString();
-    String content=contentController.text.toString();
-    String date=dateController.text.toString();
-    if(firstName.isEmpty||lastName.isEmpty||content.isEmpty||date.isEmpty)return;
+  File? _image;
+  final picker = ImagePicker();
 
-    _apiCreatePost(firstName,lastName,content,date);
+  _createPost() {
+    String firstName = firstNameController.text.toString();
+    String lastName = lastNameController.text.toString();
+    String content = contentController.text.toString();
+    String date = dateController.text.toString();
+    if (firstName.isEmpty ||
+        lastName.isEmpty ||
+        content.isEmpty ||
+        date.isEmpty) return;
 
+    if (_image != null) print("fsf");
+    _apiUploadImage(firstName, lastName, content, date);
+
+    // _apiCreatePost(firstName, lastName, content, date,);
   }
 
-  _apiCreatePost(String firstName,String lastName,String content,String date){
+  _apiUploadImage(
+      String firstName, String lastName, String content, String date) {
     setState(() {
-      isLoading=true;
+      isLoading = true;
     });
-    var post=Post(first_name: firstName,last_name: lastName,content: content,date: date);
+    StoreServise.uploadImage(_image!).then((img_url) => {
+          _apiCreatePost(firstName, lastName, content, date, img_url),
+        });
+  }
+
+  _apiCreatePost(String firstName, String lastName, String content, String date,
+      String img_url) {
+    setState(() {
+      isLoading = true;
+    });
+    var post = Post(
+        first_name: firstName,
+        last_name: lastName,
+        content: content,
+        img_url: img_url,
+        date: date);
     RTDBServise.addPost(post).then((value) => {
-      _resAddPost(),
-    });
-
+          _resAddPost(),
+        });
   }
 
-  _resAddPost(){
+  _resAddPost() {
     setState(() {
-      isLoading=false;
+      isLoading = false;
     });
-    Navigator.of(context).pop({'data':'done'});
+    Navigator.of(context).pop({'data': 'done'});
   }
 
+  Future _getImage() async {
+    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+      } else {
+        print("Eror");
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,8 +107,24 @@ class _CreatePageState extends State<CreatePage> {
         child: Stack(
           children: [
             Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                InkWell(
+                  onTap: _getImage,
+                  child: Container(
+                    height: 110,
+                    width: 110,
+                    child: _image != null
+                        ? Image.file(
+                            _image!,
+                            fit: BoxFit.cover,
+                          )
+                        : Image.asset("assets/images/ic_camera1.png"),
+                  ),
+                ),
+                SizedBox(
+                  height: 15,
+                ),
                 TextField(
                   controller: firstNameController,
                   decoration: InputDecoration(hintText: "First Name"),
@@ -118,11 +172,10 @@ class _CreatePageState extends State<CreatePage> {
                 )
               ],
             ),
-
             isLoading
                 ? const Center(
-              child: CircularProgressIndicator(),
-            )
+                    child: CircularProgressIndicator(),
+                  )
                 : SizedBox.shrink()
           ],
         ),

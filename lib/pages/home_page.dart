@@ -16,9 +16,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
-
-
   bool isLoading = false;
   List<Post> items = [];
 
@@ -34,7 +31,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   _apiPostList() async {
-print("sad");
+    print("sad");
     setState(() {
       isLoading = true;
     });
@@ -50,8 +47,6 @@ print("sad");
     super.initState();
     _apiPostList();
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -70,18 +65,11 @@ print("sad");
       ),
       body: Stack(
         children: [
-       FutureBuilder(builder: (_,snapshot) {
-         return  ListView.builder(
-             itemCount: items.length,
-             itemBuilder: (ctx, index) {
-               return ListTile(
-                 title: itemofPost(items[index]),
-               );
-             });
-       }
-
-
-       )
+          ListView.builder(
+              itemCount: items.length,
+              itemBuilder: (ctx, index) {
+                return itemofPost(items[index]);
+              })
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -134,10 +122,23 @@ print("sad");
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Container(
+                  width: 370,
+                  height: 200,
+                  child: post.img_url != null
+                      ? Image.network(
+                          post.img_url!,
+                          fit: BoxFit.cover,
+                        )
+                      : Image.asset("assets/images/ic_defoult.jpg"),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
                 Row(
                   children: [
                     Text(
-                      post.first_name!,
+                      post.first_name.toString(),
                       style: const TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.bold,
@@ -147,7 +148,9 @@ print("sad");
                       width: 10,
                     ),
                     Text(
-                      post.last_name!,
+                      post.last_name.toString(),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Colors.black,
@@ -159,16 +162,19 @@ print("sad");
                   height: 5,
                 ),
                 Text(
-                  post.date.toString(),
+                  post.last_name.toString(),
                   style: const TextStyle(color: Colors.black, fontSize: 18),
                 ),
                 SizedBox(
                   height: 5,
                 ),
-                Text(
-                  post.content.toString(),
-                  style: const TextStyle(color: Colors.black, fontSize: 18),
-                ),
+               SizedBox(
+                 width: 360,
+                 child:  Text(
+                   post.content.toString(),
+                   style: const TextStyle(color: Colors.black, fontSize: 18),
+                 ),
+               )
               ],
             )
           ],

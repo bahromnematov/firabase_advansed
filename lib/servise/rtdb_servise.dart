@@ -14,14 +14,14 @@ class RTDBServise {
 
   static Future<List<Post>> getPost() async{
     List<Post> items=[];
-    Query _query=_database.ref.child("posts");
+    Query _query=_database.ref.child("post");
     DatabaseEvent event=await _query.once();
     var snapshot=event.snapshot;
 
     for(var child in snapshot.children){
       var jsonPost =jsonEncode(child.value);
       Map<String,dynamic> map =jsonDecode(jsonPost);
-      var post=Post(first_name: map['first_name'],last_name: map['last_name'],content: map['content'],date: map['data']);
+      var post=Post(first_name: map['first_name'],last_name: map['last_name'],content: map['content'],img_url:map["img_url"],date: map['data']);
       items.add(post);
     }
 
